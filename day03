@@ -1,0 +1,40 @@
+import os
+import re
+dir = os.path.dirname(__file__)
+os.chdir(dir)
+
+def read_input_lines():
+    with open('input.txt', 'r') as fh:
+        return [x.strip() for x in fh.readlines()]
+def read_input_text():
+    with open('input.txt', 'r') as fh:
+        return fh.read().strip()
+
+lines = read_input_text()
+instructions = re.findall("mul\([\w]+,[\w]+\)",lines)
+instructions_clean = []
+for i in instructions:
+    temp = re.findall('\d+',i)
+    instructions_clean.append(int(temp[0]) * int(temp[1]))
+print(sum(instructions_clean),"partA: 179571322")
+
+#####################################
+lines = read_input_text()
+
+list_of_slices = re.split("(don't\(\))|(do\(\))",lines)
+list_of_slices = [x for x in list_of_slices if x != None]
+
+instructions_clean = []
+for ind, slice in enumerate(list_of_slices):
+    if ind == 0:
+        instructions = re.findall("mul\([\w]+,[\w]+\)", slice)
+        for i in instructions:
+            temp = re.findall('\d+', i)
+            instructions_clean.append(int(temp[0]) * int(temp[1]))
+    elif slice == "do()":
+        instructions = re.findall("mul\([\w]+,[\w]+\)", list_of_slices[ind + 1])
+        for i in instructions:
+            temp = re.findall('\d+', i)
+            instructions_clean.append(int(temp[0]) * int(temp[1]))
+
+print(sum(instructions_clean),"partB: 103811193")
