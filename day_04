@@ -1,0 +1,60 @@
+import os
+dir = os.path.dirname(__file__)
+os.chdir(dir)
+
+def read_input_lines():
+    with open('input.txt', 'r') as fh:
+        return [x.strip() for x in fh.readlines()]
+
+lines = read_input_lines()
+
+occ = 0
+#diagonal and vertical
+for indY,line in enumerate(lines):
+    for indX,letter in enumerate(line):
+        if letter == "X":
+            #diagonal right down
+            if indY  < len(lines)-3 and indX < len(line)-3:#check if indY is more than 4 places away from len of line
+                w = ''.join([letter,lines[indY+1][indX+1],lines[indY+2][indX+2],lines[indY+3][indX+3]])
+                if w =="XMAS":
+                    occ +=1
+            #diagonal right up
+            if indY >2 and indX < len(line) - 3:
+                w = ''.join([letter,lines[indY-1][indX+1],lines[indY-2][indX+2],lines[indY-3][indX+3]])
+                if w =="XMAS":
+                    occ += 1
+            #diagonal left down
+            if indY < len(lines)-3 and indX > 2:
+                w = ''.join([letter, lines[indY + 1][indX - 1], lines[indY + 2][indX - 2], lines[indY + 3][indX - 3]])
+                if w == "XMAS":
+                    occ += 1
+            #diagonal left up
+            if indY >2 and indX > 2:
+                w = ''.join([letter, lines[indY - 1][indX - 1], lines[indY - 2][indX - 2], lines[indY - 3][indX - 3]])
+                if w == "XMAS":
+                    occ += 1
+            #straight up
+            if indY >2 :
+                w = ''.join([letter, lines[indY - 1][indX], lines[indY - 2][indX], lines[indY - 3][indX]])
+                if w == "XMAS":
+                    occ += 1
+            # straight down
+            if indY < len(lines) -3:
+                w = ''.join([letter, lines[indY + 1][indX], lines[indY + 2][indX], lines[indY + 3][indX]])
+                if w == "XMAS":
+                     occ += 1
+#horizontal forwards and backwards
+for i in lines:
+    letters = ''.join(i)
+    occ += letters.count("XMAS")
+    occ += letters.count("SAMX")
+print("occurences part 1: ",occ)
+##############################################
+occ=0
+for indY,line in enumerate(lines):
+    for indX,letter in enumerate(line):
+        if letter == "A" and indY >0 and indY < len(lines)-1 and indX >0 and indX <len(line)-1:
+            if "".join([lines[indY-1][indX-1],letter,lines[indY+1][indX+1]])  in ["MAS","SAM"]:
+                if "".join([lines[indY-1][indX+1],letter,lines[indY+1][indX-1]])  in ["MAS","SAM"]:
+                    occ +=1
+print("occurences part 2: ",occ)
