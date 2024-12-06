@@ -1,0 +1,51 @@
+import os
+from collections import defaultdict
+import math
+dir = os.path.dirname(__file__)
+os.chdir(dir)
+
+def read_input_lines():
+    with open('input.txt', 'r') as fh:
+        return [x.strip() for x in fh.readlines()]
+
+lines = read_input_lines()
+
+rules, updates = [x.split("|") for x in lines[:lines.index('')]],[u.split(",") for u in lines[lines.index(''):][1:]]
+
+rules_dict = defaultdict(list)
+for rule in rules:
+    rules_dict[rule[0]].append(rule[1])
+invalid= []
+for update in updates:
+    for ind,x in enumerate(update):
+        nums_before = set(update[:ind])
+        if nums_before.intersection(set(rules_dict[x])):
+            invalid.append(update)
+count = 0
+for update in updates:
+    if update not in invalid:
+        count += int(update[int(len(update)/2)])
+print(count)
+################################################################
+rules_dict = defaultdict(list)
+for rule in rules:
+    rules_dict[rule[0]].append(rule[1])
+old_invalids  = [x for i, x in enumerate(invalid) if x not in invalid[:i]]
+new_valids = []
+for ind_inv,update in enumerate(old_invalids):
+    new_update = update.copy()
+    for ind,num in enumerate(update):
+        up_copy = update.copy()
+        up_copy.remove(num)
+        count = 0
+        for x in up_copy:
+            if num in rules_dict[x]:
+                count +=1
+        new_update[count] = num
+    new_valids.append(new_update)
+
+count = 0
+for update in new_valids:
+    count += int(update[int(len(update)/2)])
+
+print(count)
