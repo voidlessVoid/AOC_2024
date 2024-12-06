@@ -1,0 +1,75 @@
+import os
+from collections import defaultdict
+from itertools import cycle
+dir = os.path.dirname(__file__)
+os.chdir(dir)
+
+def read_input_lines():
+    with open('input.txt', 'r') as fh:
+        return [x.strip() for x in fh.readlines()]
+lines = read_input_lines()
+new_lines = []
+for line in lines:
+    new_lines.append([x for x in line])
+#print(lines)
+obstacles = []
+guardPos = []
+guardDir = None
+guardCycle = cycle(["^",">","v","<"])
+for indY,row in enumerate(new_lines):
+    for indX,space in enumerate(row):
+        if space == '#':
+            obstacles.append([indY,indX])
+        elif space != ".":
+            guardPos.append([indY,indX])
+            guardDir = space
+            new_lines[indY][indX] = "."
+
+
+on_map = True
+count = 0
+while on_map:
+    try:
+        if guardDir == "^":
+            if new_lines[guardPos[-1][0]-1][guardPos[-1][1]] ==".":
+                guardPos.append([guardPos[-1][0]-1,guardPos[-1][1]])
+            else:
+                guardDir = next(guardCycle)
+                #print(guardDir)
+        if guardDir == ">":
+            if new_lines[guardPos[-1][0]][guardPos[-1][1]+1] ==".":
+                guardPos.append([guardPos[-1][0],guardPos[-1][1]+1])
+            else:
+                guardDir = next(guardCycle)
+                #print(guardDir)
+        if guardDir == "v":
+            if new_lines[guardPos[-1][0]+1][guardPos[-1][1]] ==".":
+                guardPos.append([guardPos[-1][0]+1,guardPos[-1][1]])
+            else:
+                guardDir = next(guardCycle)
+                #print(guardDir)
+        if guardDir == "<":
+            if new_lines[guardPos[-1][0]][guardPos[-1][1]-1] ==".":
+                guardPos.append([guardPos[-1][0],guardPos[-1][1]-1])
+            else:
+                guardDir = next(guardCycle)
+                #print(guardDir)
+    except:
+        on_map = False
+
+unique_pos = []
+for pos in guardPos:
+    if pos not in unique_pos:
+        unique_pos.append(pos)
+print(len(unique_pos))
+
+
+
+
+for indY,row in enumerate(new_lines):
+    for indX,space in enumerate(new_lines):
+        if [indY,indX] in guardPos:
+            new_lines[indY][indX] = "X"
+for i in new_lines:
+    print(i)
+
